@@ -1,0 +1,12 @@
+model Reviews{
+    id String @id @default(uuid())
+
+    user_reviews User @relation(fields: [user_id],references: [id])
+    user_id String
+
+    ratings Int
+    comment String
+
+    @@index([id])
+    @@map("reviews")
+}

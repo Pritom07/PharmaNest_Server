@@ -1,0 +1,9 @@
+model Categories{
+id Int @id @default(autoincrement())
+name String
+description String
+medicines Medicines[]
+
+@@index([id])
+@@map("categories")
+}

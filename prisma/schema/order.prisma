@@ -1,0 +1,22 @@
+model Orders{
+    id String @id @default(uuid())
+
+    user_order User @relation(fields:[user_id],references:[id])
+    user_id String
+
+    medicines Json
+    total_amount Int
+    address String
+    status OrderStatus @default(PLACED)
+
+    @@index([id])
+    @@index([user_id])
+    @@map("orders")
+}
+
+enum OrderStatus{
+    PLACED
+    CANCELLED
+    SHIPPED
+    DELIVERED
+}

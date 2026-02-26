@@ -3,9 +3,14 @@ model User {
   name          String
   email         String
   emailVerified Boolean   @default(false)
+  role          userRole @default( CUSTOMER)
+  status        userStatus @default(ACTIVE)
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  orders        Orders[]
+  medicines     Medicines[]
+  reviews       Reviews[]
   sessions      Session[]
   accounts      Account[]
 
@@ -59,4 +64,15 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum userRole{
+  ADMIN
+  SELLER
+  CUSTOMER
+}
+
+enum userStatus{
+  ACTIVE
+  BANNED
 }
