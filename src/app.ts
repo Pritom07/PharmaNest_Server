@@ -3,6 +3,7 @@ import cors from "cors";
 import config from "./config";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
+import { medicineRotes } from "./modules/medicine/medicine.routes";
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use(
   }),
 );
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use("/api/seller", medicineRotes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Pharmanest Server!");

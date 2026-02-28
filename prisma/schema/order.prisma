@@ -8,6 +8,8 @@ model Orders{
     total_amount Int
     address String
     status OrderStatus @default(PLACED)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@index([id])
     @@index([user_id])
