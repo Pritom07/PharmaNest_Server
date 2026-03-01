@@ -5,4 +5,5 @@ export type T_medicine = {
   manufacturer: string;
   category_id: number;
   user_id: string;
+  img_url: string;
 };

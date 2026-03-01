@@ -8,7 +8,58 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
-  trustedOrigins: [config.APP_URL!, config.PROD_APP_URL!],
+  trustedOrigins: async (request) => {
+    const origin = request?.headers.get("origin");
+
+    const allowedOrigins = [
+      config.APP_URL,
+      config.PROD_APP_URL,
+      config.BETTER_AUTH_URL,
+      "http://localhost:3000",
+      "http://localhost:5000",
+    ].filter(Boolean);
+
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/.*\.vercel\.app$/.test(origin)
+    ) {
+      return [origin as string];
+    }
+
+    return [];
+  },
+
+  basePath: "/api/auth",
+
+  cookies: {
+    sessionToken: {
+      name: "better-auth.session_token",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        domain: ".vercel.app",
+      },
+    },
+  },
+
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 6 * 60,
+    },
+  },
+
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false,
+    },
+    disableCSRFCheck: true,
+  },
 
   user: {
     additionalFields: {

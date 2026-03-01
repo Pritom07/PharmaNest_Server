@@ -6,6 +6,7 @@ const config = {
   PORT: process.env.PORT,
   APP_URL: process.env.APP_URL,
   PROD_APP_URL: process.env.PROD_APP_URL,
+  BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
 };
 
 export default config;
