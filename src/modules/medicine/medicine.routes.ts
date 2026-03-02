@@ -12,4 +12,10 @@ router.get(
 
 router.post("/medicines", auth(Role.SELLER), medicineControllers.addMedicine);
 
+router.delete(
+  "/medicines/:id",
+  auth(Role.SELLER),
+  medicineControllers.deleteMedicine,
+);
+
 export const medicineRotes = router;

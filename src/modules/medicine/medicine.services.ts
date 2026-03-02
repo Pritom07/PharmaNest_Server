@@ -43,4 +43,17 @@ const viewAllMedicines = async (paginationData: T_viewMedicineParams) => {
   return res;
 };
 
-export const medicineServices = { addMedicine, viewAllMedicines };
+const deleteMedicine = async (id: string) => {
+  const res = await prisma.medicines.delete({
+    where: {
+      id,
+    },
+  });
+  return res;
+};
+
+export const medicineServices = {
+  addMedicine,
+  viewAllMedicines,
+  deleteMedicine,
+};
