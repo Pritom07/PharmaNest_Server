@@ -44,6 +44,16 @@ const viewAllMedicines = async (paginationData: T_viewMedicineParams) => {
 };
 
 const deleteMedicine = async (id: string) => {
+  const isExist = await prisma.medicines.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExist) {
+    throw new Error("Medicine Not Found To Delete");
+  }
+
   const res = await prisma.medicines.delete({
     where: {
       id,
@@ -52,8 +62,51 @@ const deleteMedicine = async (id: string) => {
   return res;
 };
 
+const getMedicineById = async (id: string) => {
+  const res = await prisma.medicines.findUnique({
+    where: {
+      id,
+    },
+
+    include: {
+      medicine_Category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!res) {
+    throw new Error("Medicine Not Found");
+  }
+  return res;
+};
+
+const updateMedicine = async (id: string, payLoad: T_medicine) => {
+  const isExist = await prisma.medicines.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExist) {
+    throw new Error("Medicine Not Found");
+  }
+
+  const res = await prisma.medicines.update({
+    where: {
+      id,
+    },
+    data: payLoad,
+  });
+  return res;
+};
+
 export const medicineServices = {
   addMedicine,
   viewAllMedicines,
   deleteMedicine,
+  getMedicineById,
+  updateMedicine,
 };

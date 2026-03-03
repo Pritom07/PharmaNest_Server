@@ -74,8 +74,47 @@ const deleteMedicine = async (
   }
 };
 
+const getMedicineById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id as string;
+    const data = await medicineServices.getMedicineById(id);
+    return res.status(200).json({
+      success: true,
+      message: "Getting Medicine By id successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+const updateMedicine = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const payLoad: T_medicine = req.body;
+    const data = await medicineServices.updateMedicine(id as string, payLoad);
+    return res.status(200).json({
+      success: true,
+      message: "Medicine Updation Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const medicineControllers = {
   addMedicine,
   viewAllMedicines,
   deleteMedicine,
+  getMedicineById,
+  updateMedicine,
 };

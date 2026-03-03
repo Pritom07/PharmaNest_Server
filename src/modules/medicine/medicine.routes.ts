@@ -10,7 +10,19 @@ router.get(
   medicineControllers.viewAllMedicines,
 );
 
+router.get(
+  "/medicines/:id",
+  auth(Role.SELLER),
+  medicineControllers.getMedicineById,
+);
+
 router.post("/medicines", auth(Role.SELLER), medicineControllers.addMedicine);
+
+router.patch(
+  "/medicines/:id",
+  auth(Role.SELLER),
+  medicineControllers.updateMedicine,
+);
 
 router.delete(
   "/medicines/:id",
