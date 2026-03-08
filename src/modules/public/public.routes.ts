@@ -5,6 +5,8 @@ const router = Router();
 
 router.get("/medicines", publicControllers.getAllMedicines);
 
+router.get("/medicines/topRated", publicControllers.getTopRatedMedicines);
+
 router.get("/medicines/:id", publicControllers.getMedicineById);
 
 router.post("/medicines", publicControllers.getMedicineByName);

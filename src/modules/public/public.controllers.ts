@@ -67,8 +67,26 @@ const getMedicineByName = async (
   }
 };
 
+const getTopRatedMedicines = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = await publicServices.getTopRatedMedicines();
+    return res.status(200).json({
+      success: true,
+      message: "Getting Top Rated Medicines Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const publicControllers = {
   getAllMedicines,
   getMedicineById,
   getMedicineByName,
+  getTopRatedMedicines,
 };

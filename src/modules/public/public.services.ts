@@ -51,8 +51,18 @@ const getMedicineByName = async (name: string) => {
   return res;
 };
 
+const getTopRatedMedicines = async () => {
+  const res = await prisma.medicines.findMany({
+    orderBy: {
+      price: "desc",
+    },
+  });
+  return res.slice(0, 4);
+};
+
 export const publicServices = {
   getAllMedicines,
   getMedicineById,
   getMedicineByName,
+  getTopRatedMedicines,
 };
