@@ -18,6 +18,7 @@ model Orders{
 
 enum OrderStatus{
     PLACED
+    PROCESSING
     CANCELLED
     SHIPPED
     DELIVERED

@@ -5,6 +5,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { medicineRotes } from "./modules/medicine/medicine.routes";
 import { notFound } from "./middlewares/notFound";
+import { publicRoutes } from "./modules/public/public.routes";
 
 const app = express();
 const allowedOrigins = [
@@ -38,6 +39,8 @@ app.use(
   }),
 );
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use("/api", publicRoutes);
 
 app.use("/api/seller", medicineRotes);
 

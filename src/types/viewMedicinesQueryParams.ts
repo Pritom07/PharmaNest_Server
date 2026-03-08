@@ -4,4 +4,5 @@ export type T_viewMedicineParams = {
   skip?: number;
   sortBy?: string;
   sortOrder?: string;
+  category_id?: number;
 };
