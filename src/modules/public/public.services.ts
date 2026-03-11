@@ -32,6 +32,13 @@ const getMedicineById = async (id: string) => {
     where: {
       id,
     },
+    include: {
+      medicine_Category: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
   if (!res) {
     throw new Error("Medicine Not Found");
