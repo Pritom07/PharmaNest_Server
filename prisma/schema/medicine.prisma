@@ -7,10 +7,10 @@ model Medicines{
     img_url String
     description String? 
 
-    category Categories @relation(fields:[category_id],references:[id])
+    category Categories @relation(fields:[category_id],references:[id],onDelete: Cascade,onUpdate: Cascade)
     category_id Int
 
-    seller User @relation(fields:[seller_id],references: [id])
+    seller User @relation(fields:[seller_id],references: [id],onDelete: Cascade,onUpdate: Cascade)
     seller_id String 
 
     orderItems OrderItem[]

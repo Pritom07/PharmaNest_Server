@@ -1,13 +1,13 @@
 model OrderItem{
     id String @id @default(uuid())
 
-    medicine Medicines @relation(fields: [medicine_id],references: [id])
+    medicine Medicines @relation(fields: [medicine_id],references: [id],onDelete:Cascade,onUpdate: Cascade)
     medicine_id String
 
-    order Orders @relation(fields: [order_id],references: [id])
+    order Orders @relation(fields: [order_id],references: [id],onDelete:Cascade,onUpdate: Cascade)
     order_id String
 
-    seller User @relation(fields: [seller_id],references: [id])
+    seller User @relation(fields: [seller_id],references: [id],onDelete:Cascade,onUpdate: Cascade)
     seller_id String
 
     price Int
