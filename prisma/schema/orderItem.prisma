@@ -1,0 +1,33 @@
+model OrderItem{
+    id String @id @default(uuid())
+
+    medicine Medicines @relation(fields: [medicine_id],references: [id])
+    medicine_id String
+
+    order Orders @relation(fields: [order_id],references: [id])
+    order_id String
+
+    seller User @relation(fields: [seller_id],references: [id])
+    seller_id String
+
+    price Int
+    quantity Int
+    price_paying_status Boolean @default(false)
+    status orderItemStatus @default(PLACED)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([medicine_id])
+    @@index([order_id])
+    @@index([seller_id])
+    @@map("orderItem")
+}
+
+enum orderItemStatus{
+ PLACED
+ CANCELLED
+ PROCESSING
+ SHIPPED
+ DELIVERED
+}

@@ -33,7 +33,7 @@ const getMedicineById = async (id: string) => {
       id,
     },
     include: {
-      medicine_Category: {
+      category: {
         select: {
           name: true,
         },

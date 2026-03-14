@@ -1,8 +1,8 @@
 model Reviews{
     id String @id @default(uuid())
 
-    user_reviews User @relation(fields: [user_id],references: [id])
-    user_id String
+    customer User @relation(fields: [customer_id],references: [id])
+    customer_id String
 
     ratings Int
     comment String

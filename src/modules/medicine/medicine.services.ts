@@ -21,7 +21,7 @@ const viewAllMedicines = async (paginationData: T_viewMedicineParams) => {
       },
 
       include: {
-        medicine_Category: {
+        category: {
           select: {
             name: true,
           },
@@ -69,7 +69,7 @@ const getMedicineById = async (id: string) => {
     },
 
     include: {
-      medicine_Category: {
+      category: {
         select: {
           name: true,
         },

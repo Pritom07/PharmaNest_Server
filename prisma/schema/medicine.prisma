@@ -5,18 +5,20 @@ model Medicines{
     stock Int
     manufacturer String
     img_url String
-    description String? @map("Description")
+    description String? 
 
-    medicine_Category Categories @relation(fields:[category_id],references:[id])
+    category Categories @relation(fields:[category_id],references:[id])
     category_id Int
 
-    user_medicine User @relation(fields:[user_id],references: [id])
-    user_id String
+    seller User @relation(fields:[seller_id],references: [id])
+    seller_id String 
+
+    orderItems OrderItem[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@index([id])
-    @@index([user_id])
+    @@index([seller_id])
     @@map("medicines")
 }

@@ -8,11 +8,15 @@ model User {
   image         String?
   address       String?
   phoneNumber   String?
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
   orders        Orders[]
+  orderItems    OrderItem[]
   medicines     Medicines[]
   reviews       Reviews[]
+
   sessions      Session[]
   accounts      Account[]
 

@@ -1,6 +1,20 @@
 import { prisma } from "../../lib/prisma";
 import { T_user } from "../../types/user.type";
 
+const getUserById = async (id: string) => {
+  const res = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!res) {
+    throw new Error("User Not Found !");
+  }
+
+  return res;
+};
+
 const updateProfile = async (id: string, payLoad: T_user) => {
   const isExist = await prisma.user.findUnique({
     where: {
@@ -21,4 +35,4 @@ const updateProfile = async (id: string, payLoad: T_user) => {
   return res;
 };
 
-export const userServices = { updateProfile };
+export const userServices = { getUserById, updateProfile };

@@ -4,6 +4,6 @@ export type T_medicine = {
   stock: number;
   manufacturer: string;
   category_id: number;
-  user_id: string;
+  seller_id: string;
   img_url: string;
 };

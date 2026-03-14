@@ -1,25 +1,24 @@
 model Orders{
     id String @id @default(uuid())
 
-    user_order User @relation(fields:[user_id],references:[id])
-    user_id String
+    customer User @relation(fields:[customer_id],references:[id])
+    customer_id String
 
-    medicines Json
+    subtotal_amount Int
+    delivery_charge Int
     total_amount Int
+    total_paid_amount Int @default(0)
+    delivery_charge_status Boolean @default(false)
+
+    phoneNumber String
     address String
-    status OrderStatus @default(PLACED)
+
+    orderItems OrderItem[]
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@index([id])
-    @@index([user_id])
+    @@index([customer_id])
     @@map("orders")
-}
-
-enum OrderStatus{
-    PLACED
-    PROCESSING
-    CANCELLED
-    SHIPPED
-    DELIVERED
 }
