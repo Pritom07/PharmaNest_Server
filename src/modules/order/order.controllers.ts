@@ -25,7 +25,7 @@ const getAllOrders = async (
     const data = await orderServices.getAllOrders(customer_id as string);
     return res.status(200).json({
       success: true,
-      message: "Getting All Medicines Successfully",
+      message: "Getting All Orders Successfully",
       data: data,
     });
   } catch (err: any) {
