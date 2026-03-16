@@ -33,4 +33,26 @@ const getAllOrders = async (
   }
 };
 
-export const orderControllers = { createOrder, getAllOrders };
+const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = req.params.id;
+    const data: any = await orderServices.deleteOrder(id as string);
+    if (data.length > 0) {
+      return res.status(500).json({
+        success: false,
+        message: "Order Delete Failed",
+        data: data,
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "Order Delete Successfull",
+        data: data,
+      });
+    }
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const orderControllers = { createOrder, getAllOrders, deleteOrder };
