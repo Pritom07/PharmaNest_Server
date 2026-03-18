@@ -10,4 +10,10 @@ router.get(
   orderItemControllers.getAllOrderItems,
 );
 
+router.patch(
+  "/customer/:id",
+  auth(Role.CUSTOMER),
+  orderItemControllers.cancelOrderItem,
+);
+
 export const orderItemRoutes = router;

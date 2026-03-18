@@ -149,4 +149,25 @@ const deleteOrder = async (id: string) => {
   return res;
 };
 
-export const orderServices = { createOrder, getAllOrders, deleteOrder };
+const getAmountData = async (id: string) => {
+  const res = await prisma.orders.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      subtotal_amount: true,
+      delivery_charge: true,
+      total_amount: true,
+      total_paid_amount: true,
+      delivery_charge_status: true,
+    },
+  });
+  return res;
+};
+
+export const orderServices = {
+  createOrder,
+  getAllOrders,
+  deleteOrder,
+  getAmountData,
+};

@@ -55,4 +55,27 @@ const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const orderControllers = { createOrder, getAllOrders, deleteOrder };
+const getAmountData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const data = await orderServices.getAmountData(id as string);
+    return res.status(200).json({
+      success: true,
+      message: "Getting Amount Data Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const orderControllers = {
+  createOrder,
+  getAllOrders,
+  deleteOrder,
+  getAmountData,
+};
