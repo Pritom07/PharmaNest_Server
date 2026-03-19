@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { orderServices } from "./order.services";
 import { T_medicineOrder } from "../../types/order.type";
+import { T_payDeliveryCharge } from "../../types/payDeliveryCharge.type";
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -73,9 +74,41 @@ const getAmountData = async (
   }
 };
 
+const payDeliveryCharge = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const payLoad = req.body;
+    const { data, status } = await orderServices.payDeliveryCharge(
+      id as string,
+      payLoad as T_payDeliveryCharge,
+    );
+
+    if (status === 200) {
+      return res.status(200).json({
+        success: true,
+        message: "Paying Delivery Charge Successfull",
+        data: data,
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "trnxID or Seller ID isn't correct !",
+        data: null,
+      });
+    }
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
   deleteOrder,
   getAmountData,
+  payDeliveryCharge,
 };

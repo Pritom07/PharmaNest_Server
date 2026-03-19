@@ -54,4 +54,34 @@ const cancelOrderItem = async (
   }
 };
 
-export const orderItemControllers = { getAllOrderItems, cancelOrderItem };
+const deliveredStatusChecking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const order_id = req.params.id;
+    const data = await orderItemServices.deliveredStatusChecking(
+      order_id as string,
+    );
+    if (data === true) {
+      return res.status(200).json({
+        success: true,
+        message: "Status DELIVERED Found",
+      });
+    }
+
+    return res.status(403).json({
+      success: false,
+      message: "Status DELIVERED Not Found",
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const orderItemControllers = {
+  getAllOrderItems,
+  cancelOrderItem,
+  deliveredStatusChecking,
+};

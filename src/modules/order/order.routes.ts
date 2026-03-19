@@ -14,6 +14,12 @@ router.get(
 
 router.post("/order", auth(Role.CUSTOMER), orderControllers.createOrder);
 
+router.patch(
+  "/payDelivery/:id",
+  auth(Role.CUSTOMER),
+  orderControllers.payDeliveryCharge,
+);
+
 router.delete("/:id", auth(Role.CUSTOMER), orderControllers.deleteOrder);
 
 export const orderRoutes = router;

@@ -10,6 +10,12 @@ router.get(
   orderItemControllers.getAllOrderItems,
 );
 
+router.get(
+  "/deliveredChecking/:id",
+  auth(Role.CUSTOMER),
+  orderItemControllers.deliveredStatusChecking,
+);
+
 router.patch(
   "/customer/:id",
   auth(Role.CUSTOMER),

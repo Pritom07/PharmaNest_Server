@@ -110,4 +110,23 @@ const cancelOrderItem = async (id: string, payLoad: T_cancelOrderItem) => {
   return res;
 };
 
-export const orderItemServices = { getAllOrderItems, cancelOrderItem };
+const deliveredStatusChecking = async (order_id: string) => {
+  const isExist = await prisma.orderItem.findFirst({
+    where: {
+      order_id,
+      status: "DELIVERED",
+    },
+  });
+
+  if (isExist) {
+    return true;
+  }
+
+  return false;
+};
+
+export const orderItemServices = {
+  getAllOrderItems,
+  cancelOrderItem,
+  deliveredStatusChecking,
+};

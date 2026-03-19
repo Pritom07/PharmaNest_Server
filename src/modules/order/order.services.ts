@@ -1,6 +1,8 @@
 import { prisma } from "../../lib/prisma";
 import { T_medicine } from "../../types/medicine.type";
 import { T_medicineOrder } from "../../types/order.type";
+import crypto from "crypto";
+import { T_payDeliveryCharge } from "../../types/payDeliveryCharge.type";
 
 const createOrder = async (payLoad: T_medicineOrder) => {
   const res = await prisma.$transaction(async (tx) => {
@@ -23,6 +25,8 @@ const createOrder = async (payLoad: T_medicineOrder) => {
       }
     }
 
+    const transection_id = crypto.randomBytes(4).toString("hex");
+
     const result = await tx.orders.create({
       data: {
         customer_id: payLoad.customer_id,
@@ -31,6 +35,7 @@ const createOrder = async (payLoad: T_medicineOrder) => {
         total_amount: payLoad.total_amount,
         phoneNumber: payLoad.phoneNumber,
         address: payLoad.address,
+        trnxID: transection_id,
         orderItems: {
           create: payLoad.medicines.map((medicine: T_medicine) => {
             return {
@@ -165,9 +170,57 @@ const getAmountData = async (id: string) => {
   return res;
 };
 
+const payDeliveryCharge = async (id: string, payLoad: T_payDeliveryCharge) => {
+  const res = await prisma.$transaction(async (tx) => {
+    const isTransectionExist = await tx.orders.findUnique({
+      where: {
+        id,
+        trnxID: payLoad.trnxID,
+      },
+      select: {
+        delivery_charge: true,
+      },
+    });
+
+    if (!isTransectionExist) {
+      return { data: null, status: 403 };
+    }
+
+    const isSellerExist = await tx.orderItem.findFirst({
+      where: {
+        order_id: id,
+        seller_id: payLoad.delivery_charge_taker_seller_id,
+      },
+    });
+
+    if (!isSellerExist) {
+      return { data: null, status: 403 };
+    }
+
+    const result = await tx.orders.update({
+      where: {
+        id,
+      },
+      data: {
+        delivery_charge_status: true,
+        total_paid_amount: {
+          increment: isTransectionExist.delivery_charge,
+        },
+        delivery_charge_taker_seller_id:
+          payLoad.delivery_charge_taker_seller_id,
+      },
+    });
+
+    return { data: result, status: 200 };
+  });
+
+  return res;
+};
+
 export const orderServices = {
   createOrder,
   getAllOrders,
   deleteOrder,
   getAmountData,
+  payDeliveryCharge,
 };

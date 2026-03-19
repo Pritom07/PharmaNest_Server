@@ -13,6 +13,9 @@ model Orders{
     phoneNumber String
     address String
 
+    trnxID String
+    delivery_charge_taker_seller_id String?
+
     orderItems OrderItem[]
 
     createdAt DateTime @default(now())
