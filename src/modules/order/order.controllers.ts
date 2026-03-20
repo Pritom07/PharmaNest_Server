@@ -105,10 +105,28 @@ const payDeliveryCharge = async (
   }
 };
 
+const getRecentOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = await orderServices.getRecentOrders();
+    return res.status(200).json({
+      success: true,
+      message: "Getting Recent Orders Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
   deleteOrder,
   getAmountData,
   payDeliveryCharge,
+  getRecentOrders,
 };

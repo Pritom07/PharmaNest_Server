@@ -103,10 +103,32 @@ const updateMedicine = async (id: string, payLoad: T_medicine) => {
   return res;
 };
 
+const getCountdata = async (seller_id: string) => {
+  const [added_Medicines, low_Stock] = await Promise.all([
+    await prisma.medicines.count({
+      where: {
+        seller_id,
+      },
+    }),
+
+    await prisma.medicines.count({
+      where: {
+        seller_id,
+        stock: {
+          lt: 10,
+        },
+      },
+    }),
+  ]);
+
+  return { added_Medicines, low_Stock };
+};
+
 export const medicineServices = {
   addMedicine,
   viewAllMedicines,
   deleteMedicine,
   getMedicineById,
   updateMedicine,
+  getCountdata,
 };

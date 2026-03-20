@@ -5,6 +5,12 @@ import { orderItemControllers } from "./orderItem.controllers";
 const router = Router();
 
 router.get(
+  "/seller/getCountData",
+  auth(Role.SELLER),
+  orderItemControllers.getCountData,
+);
+
+router.get(
   "/customer/:id",
   auth(Role.CUSTOMER),
   orderItemControllers.getAllOrderItems,

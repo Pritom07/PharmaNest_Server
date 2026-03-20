@@ -123,9 +123,28 @@ const payOrderItem = async (
   }
 };
 
+const getCountData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const seller_id = req.user?.id;
+    const data = await orderItemServices.getCountData(seller_id as string);
+    return res.status(200).json({
+      success: true,
+      message: "Getting CountData Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderItemControllers = {
   getAllOrderItems,
   cancelOrderItem,
   deliveredStatusChecking,
   payOrderItem,
+  getCountData,
 };

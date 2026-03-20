@@ -7,6 +7,12 @@ const router = Router();
 router.get("/orders", auth(Role.CUSTOMER), orderControllers.getAllOrders);
 
 router.get(
+  "/orders/recent",
+  auth(Role.SELLER),
+  orderControllers.getRecentOrders,
+);
+
+router.get(
   "/amountData/:id",
   auth(Role.CUSTOMER),
   orderControllers.getAmountData,

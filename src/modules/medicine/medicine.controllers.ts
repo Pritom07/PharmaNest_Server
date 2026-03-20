@@ -111,10 +111,29 @@ const updateMedicine = async (
   }
 };
 
+const getCountdata = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const seller_id = req.user?.id;
+    const data = await medicineServices.getCountdata(seller_id as string);
+    return res.status(200).json({
+      success: true,
+      message: "Getting CountData Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const medicineControllers = {
   addMedicine,
   viewAllMedicines,
   deleteMedicine,
   getMedicineById,
   updateMedicine,
+  getCountdata,
 };

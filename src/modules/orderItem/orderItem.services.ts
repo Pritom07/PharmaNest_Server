@@ -181,9 +181,40 @@ const payOrderItem = async (id: string, payLoad: T_payOrderItem) => {
   return res;
 };
 
+const getCountData = async (seller_id: string) => {
+  const [paid_Orders, active_Orders] = await Promise.all([
+    await prisma.orderItem.findMany({
+      where: {
+        seller_id,
+        status: "DELIVERED",
+        price_paying_status: true,
+      },
+      select: {
+        price: true,
+        quantity: true,
+      },
+    }),
+    await prisma.orderItem.count({
+      where: {
+        seller_id,
+        status: {
+          in: ["PLACED", "PROCESSING"],
+        },
+      },
+    }),
+  ]);
+
+  const total_Revenue = paid_Orders
+    .map((item) => Number(item.quantity) * Number(item.price))
+    .reduce((acc, currentVal) => acc + currentVal, 0);
+
+  return { total_Revenue, active_Orders };
+};
+
 export const orderItemServices = {
   getAllOrderItems,
   cancelOrderItem,
   deliveredStatusChecking,
   payOrderItem,
+  getCountData,
 };

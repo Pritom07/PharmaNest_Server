@@ -11,6 +11,12 @@ router.get(
 );
 
 router.get(
+  "/medicines/getCountData",
+  auth(Role.SELLER),
+  medicineControllers.getCountdata,
+);
+
+router.get(
   "/medicines/:id",
   auth(Role.SELLER),
   medicineControllers.getMedicineById,

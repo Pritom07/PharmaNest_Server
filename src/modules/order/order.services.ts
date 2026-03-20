@@ -217,10 +217,29 @@ const payDeliveryCharge = async (id: string, payLoad: T_payDeliveryCharge) => {
   return res;
 };
 
+const getRecentOrders = async () => {
+  const res = (
+    await prisma.orders.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        customer: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    })
+  ).slice(0, 5);
+  return res;
+};
+
 export const orderServices = {
   createOrder,
   getAllOrders,
   deleteOrder,
   getAmountData,
   payDeliveryCharge,
+  getRecentOrders,
 };
