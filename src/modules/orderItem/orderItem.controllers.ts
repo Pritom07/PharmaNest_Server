@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { orderItemServices } from "./orderItem.services";
+import { T_payOrderItem } from "../../types/payOrderItem";
 
 const getAllOrderItems = async (
   req: Request,
@@ -80,8 +81,51 @@ const deliveredStatusChecking = async (
   }
 };
 
+const payOrderItem = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const payLoad = req.body;
+    const { data, status } = await orderItemServices.payOrderItem(
+      id as string,
+      payLoad as T_payOrderItem,
+    );
+
+    if (status === 200) {
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: "Pay OrderItem Successfull",
+        data: data,
+      });
+    }
+
+    if (status === 403) {
+      return res.status(403).json({
+        success: false,
+        status: 403,
+        message: "Delivery Charge Not Paid Yet !",
+        data: data,
+      });
+    }
+
+    return res.status(404).json({
+      success: false,
+      status: 404,
+      message: "Medicine Not Found !",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderItemControllers = {
   getAllOrderItems,
   cancelOrderItem,
   deliveredStatusChecking,
+  payOrderItem,
 };

@@ -22,4 +22,10 @@ router.patch(
   orderItemControllers.cancelOrderItem,
 );
 
+router.patch(
+  "/customer/payOrderItem/:id",
+  auth(Role.CUSTOMER),
+  orderItemControllers.payOrderItem,
+);
+
 export const orderItemRoutes = router;

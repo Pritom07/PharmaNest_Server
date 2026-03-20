@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { T_cancelOrderItem } from "../../types/cancelOrderItem.type";
 import { T_orderItem } from "../../types/orderItem.type";
+import { T_payOrderItem } from "../../types/payOrderItem";
 
 const getAllOrderItems = async (order_id: string) => {
   const isExist = await prisma.orderItem.findFirst({
@@ -125,8 +126,64 @@ const deliveredStatusChecking = async (order_id: string) => {
   return false;
 };
 
+const payOrderItem = async (id: string, payLoad: T_payOrderItem) => {
+  const res = await prisma.$transaction(async (tx) => {
+    const isExist = await tx.orderItem.findUnique({
+      where: {
+        id,
+        medicine_id: payLoad.medicine_id,
+      },
+      select: {
+        order_id: true,
+      },
+    });
+
+    if (!isExist) {
+      return { data: "Medicine Not Found", status: 404 };
+    }
+
+    const isDeliverypaid = await tx.orders.findUnique({
+      where: {
+        id: isExist.order_id,
+      },
+      select: {
+        delivery_charge_status: true,
+      },
+    });
+
+    if (isDeliverypaid?.delivery_charge_status === false) {
+      return { data: "Delivery Charge Not Paid Yet", status: 403 };
+    }
+
+    await tx.orderItem.update({
+      where: {
+        id,
+      },
+      data: {
+        price_paying_status: true,
+      },
+    });
+
+    const result = await tx.orders.update({
+      where: {
+        id: isExist.order_id,
+      },
+      data: {
+        total_paid_amount: {
+          increment: Number(payLoad.quantity) * Number(payLoad.price),
+        },
+      },
+    });
+
+    return { data: result, status: 200 };
+  });
+
+  return res;
+};
+
 export const orderItemServices = {
   getAllOrderItems,
   cancelOrderItem,
   deliveredStatusChecking,
+  payOrderItem,
 };
