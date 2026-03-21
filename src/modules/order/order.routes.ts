@@ -13,6 +13,12 @@ router.get(
 );
 
 router.get(
+  "/orders/sellerEnd",
+  auth(Role.SELLER),
+  orderControllers.sellerEndAllOrders,
+);
+
+router.get(
   "/amountData/:id",
   auth(Role.CUSTOMER),
   orderControllers.getAmountData,

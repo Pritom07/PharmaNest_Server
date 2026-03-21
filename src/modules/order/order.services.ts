@@ -235,6 +235,26 @@ const getRecentOrders = async () => {
   return res;
 };
 
+const sellerEndAllOrders = async (seller_id: string) => {
+  const res = await prisma.orders.findMany({
+    where: {
+      orderItems: {
+        some: {
+          seller_id,
+          status: {
+            not: "CANCELLED",
+          },
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return res;
+};
+
 export const orderServices = {
   createOrder,
   getAllOrders,
@@ -242,4 +262,5 @@ export const orderServices = {
   getAmountData,
   payDeliveryCharge,
   getRecentOrders,
+  sellerEndAllOrders,
 };

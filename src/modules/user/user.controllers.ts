@@ -33,4 +33,22 @@ const updateProfile = async (
   }
 };
 
-export const userControllers = { getUserById, updateProfile };
+const getUserStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.user?.id;
+    const data = await userServices.getUserStatus(id as string);
+    return res.status(200).json({
+      success: true,
+      message: "Getting Status Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const userControllers = { getUserById, updateProfile, getUserStatus };

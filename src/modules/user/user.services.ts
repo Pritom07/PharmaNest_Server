@@ -35,4 +35,17 @@ const updateProfile = async (id: string, payLoad: T_user) => {
   return res;
 };
 
-export const userServices = { getUserById, updateProfile };
+const getUserStatus = async (id: string) => {
+  const res = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      status: true,
+    },
+  });
+
+  return res;
+};
+
+export const userServices = { getUserById, updateProfile, getUserStatus };

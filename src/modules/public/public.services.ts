@@ -6,14 +6,38 @@ const getAllMedicines = async (paginationData: T_viewMedicineParams) => {
   const medicineData = await prisma.medicines.findMany({
     take: limit,
     skip,
+
     orderBy: {
       [sortBy!]: sortOrder,
     },
-    where: category_id ? { category_id } : {},
+
+    where: category_id
+      ? {
+          category_id,
+          seller: {
+            status: "ACTIVE",
+          },
+        }
+      : {
+          seller: {
+            status: "ACTIVE",
+          },
+        },
   });
 
   const totalEntry = await prisma.medicines.count({
-    where: category_id ? { category_id } : {},
+    where: category_id
+      ? {
+          category_id,
+          seller: {
+            status: "ACTIVE",
+          },
+        }
+      : {
+          seller: {
+            status: "ACTIVE",
+          },
+        },
   });
 
   const totalPages = Math.ceil(totalEntry / (limit ?? 7));

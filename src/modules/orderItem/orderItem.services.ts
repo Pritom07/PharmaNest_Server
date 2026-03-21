@@ -11,7 +11,7 @@ const getAllOrderItems = async (order_id: string) => {
   });
 
   if (!isExist) {
-    throw new Error("Order Items Not Found");
+    return { status: 404 };
   }
 
   const allOrders = await prisma.orderItem.findMany({
@@ -51,7 +51,13 @@ const getAllOrderItems = async (order_id: string) => {
     generalOrders.push(item as T_orderItem);
   }
 
-  return { paidOrders, deliveredOrders, cancelledOrders, generalOrders };
+  return {
+    paidOrders,
+    deliveredOrders,
+    cancelledOrders,
+    generalOrders,
+    status: 200,
+  };
 };
 
 const cancelOrderItem = async (id: string, payLoad: T_cancelOrderItem) => {

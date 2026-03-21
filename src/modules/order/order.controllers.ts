@@ -122,6 +122,24 @@ const getRecentOrders = async (
   }
 };
 
+const sellerEndAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const seller_id = req.user?.id;
+    const data = await orderServices.sellerEndAllOrders(seller_id as string);
+    return res.status(200).json({
+      success: true,
+      message: "Getting All Orders successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
@@ -129,4 +147,5 @@ export const orderControllers = {
   getAmountData,
   payDeliveryCharge,
   getRecentOrders,
+  sellerEndAllOrders,
 };

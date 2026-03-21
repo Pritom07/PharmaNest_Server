@@ -9,10 +9,17 @@ const addMedicine = async (payLoad: T_medicine) => {
   return res;
 };
 
-const viewAllMedicines = async (paginationData: T_viewMedicineParams) => {
+const viewAllMedicines = async (
+  seller_id: string,
+  paginationData: T_viewMedicineParams,
+) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationData;
   const res = await prisma.$transaction(async (tx) => {
     const medicineData = await tx.medicines.findMany({
+      where: {
+        seller_id,
+      },
+
       take: limit,
       skip,
 

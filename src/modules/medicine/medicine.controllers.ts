@@ -34,17 +34,22 @@ const viewAllMedicines = async (
   next: NextFunction,
 ) => {
   try {
+    const seller_id = req.user?.id;
+
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
       req.query,
     );
 
-    const { medicineData, metadata } = await medicineServices.viewAllMedicines({
-      page,
-      limit,
-      skip,
-      sortBy,
-      sortOrder,
-    });
+    const { medicineData, metadata } = await medicineServices.viewAllMedicines(
+      seller_id as string,
+      {
+        page,
+        limit,
+        skip,
+        sortBy,
+        sortOrder,
+      },
+    );
     return res.status(200).json({
       success: true,
       message: "Getting All Medicine Successfull",

@@ -5,6 +5,12 @@ import { userControllers } from "./user.controllers";
 const router = Router();
 
 router.get(
+  "/getUserStatus",
+  auth(Role.ADMIN, Role.CUSTOMER, Role.SELLER),
+  userControllers.getUserStatus,
+);
+
+router.get(
   "/:id",
   auth(Role.ADMIN, Role.CUSTOMER, Role.SELLER),
   userControllers.getUserById,

@@ -9,16 +9,31 @@ const getAllOrderItems = async (
 ) => {
   try {
     const order_id = req.params.id;
-    const { paidOrders, deliveredOrders, cancelledOrders, generalOrders } =
-      await orderItemServices.getAllOrderItems(order_id as string);
-    res.status(200).json({
-      success: true,
-      message: "Getting All OrderItems Successfull",
-      paidOrders: paidOrders,
-      deliveredOrders: deliveredOrders,
-      cancelledOrders: cancelledOrders,
-      generalOrders: generalOrders,
-    });
+    const {
+      paidOrders,
+      deliveredOrders,
+      cancelledOrders,
+      generalOrders,
+      status,
+    } = await orderItemServices.getAllOrderItems(order_id as string);
+
+    if (status === 200) {
+      return res.status(200).json({
+        success: true,
+        message: "Getting All OrderItems Successfull",
+        paidOrders: paidOrders,
+        deliveredOrders: deliveredOrders,
+        cancelledOrders: cancelledOrders,
+        generalOrders: generalOrders,
+      });
+    }
+
+    if (status === 404) {
+      return res.status(404).json({
+        success: false,
+        message: "OrderItem Not Found",
+      });
+    }
   } catch (err: any) {
     next(err);
   }
