@@ -9,6 +9,7 @@ import { publicRoutes } from "./modules/public/public.routes";
 import { userRoutes } from "./modules/user/user.routes";
 import { orderRoutes } from "./modules/order/order.routes";
 import { orderItemRoutes } from "./modules/orderItem/orderItem.routes";
+import { reviewRoutes } from "./modules/review/review.routes";
 
 const app = express();
 const allowedOrigins = [
@@ -52,6 +53,8 @@ app.use("/api/seller", medicineRotes);
 app.use("/api/customer", orderRoutes);
 
 app.use("/api/orderItem", orderItemRoutes);
+
+app.use("/api/customer/review", reviewRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Pharmanest Server!");

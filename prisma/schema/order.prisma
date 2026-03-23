@@ -17,6 +17,7 @@ model Orders{
     delivery_charge_taker_seller_id String?
 
     orderItems OrderItem[]
+    review Reviews?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
