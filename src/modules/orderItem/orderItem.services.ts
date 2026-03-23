@@ -60,6 +60,27 @@ const getAllOrderItems = async (order_id: string) => {
   };
 };
 
+const getAllOrderItemForSeller = async (
+  order_id: string,
+  seller_id: string,
+) => {
+  const res = await prisma.orderItem.findMany({
+    where: {
+      order_id,
+      seller_id,
+    },
+    include: {
+      medicine: {
+        select: {
+          name: true,
+          img_url: true,
+        },
+      },
+    },
+  });
+  return res;
+};
+
 const cancelOrderItem = async (id: string, payLoad: T_cancelOrderItem) => {
   const res = await prisma.$transaction(async (tx) => {
     const isExist = await tx.orderItem.findUnique({
@@ -217,10 +238,27 @@ const getCountData = async (seller_id: string) => {
   return { total_Revenue, active_Orders };
 };
 
+const updateOrderItemStatus = async (
+  id: string,
+  payLoad: {
+    status: "PLACED" | "PROCESSING" | "CANCELLED" | "SHIPPED" | "DELIVERED";
+  },
+) => {
+  const res = await prisma.orderItem.update({
+    where: {
+      id,
+    },
+    data: payLoad,
+  });
+  return res;
+};
+
 export const orderItemServices = {
   getAllOrderItems,
   cancelOrderItem,
   deliveredStatusChecking,
   payOrderItem,
   getCountData,
+  getAllOrderItemForSeller,
+  updateOrderItemStatus,
 };

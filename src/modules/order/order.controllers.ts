@@ -140,6 +140,28 @@ const sellerEndAllOrders = async (
   }
 };
 
+const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const seller_id = req.user?.id;
+    const data = await orderServices.getOrderById(
+      id as string,
+      seller_id as string,
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Getting Order Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
@@ -148,4 +170,5 @@ export const orderControllers = {
   payDeliveryCharge,
   getRecentOrders,
   sellerEndAllOrders,
+  getOrderById,
 };

@@ -95,7 +95,25 @@ const getAllOrders = async (customer_id: string) => {
     },
   });
 
-  return res;
+  const result = [];
+
+  for (const item of res) {
+    const orderItemsArray = await prisma.orderItem.findMany({
+      where: {
+        order_id: item.id,
+      },
+    });
+
+    const is_All_OrderItem_Delivered_and_Paid =
+      orderItemsArray.length &&
+      orderItemsArray.some(
+        (i) => i.status === "DELIVERED" && i.price_paying_status === true,
+      );
+
+    result.push({ ...item, is_All_OrderItem_Delivered_and_Paid });
+  }
+
+  return result;
 };
 
 const deleteOrder = async (id: string) => {
@@ -255,6 +273,26 @@ const sellerEndAllOrders = async (seller_id: string) => {
   return res;
 };
 
+const getOrderById = async (id: string, seller_id: string) => {
+  const res = await prisma.orders.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      phoneNumber: true,
+      address: true,
+      trnxID: true,
+      createdAt: true,
+      customer: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  return { ...res, seller_id };
+};
+
 export const orderServices = {
   createOrder,
   getAllOrders,
@@ -263,4 +301,5 @@ export const orderServices = {
   payDeliveryCharge,
   getRecentOrders,
   sellerEndAllOrders,
+  getOrderById,
 };

@@ -12,6 +12,8 @@ router.get(
   orderControllers.getRecentOrders,
 );
 
+router.get("/order/:id", auth(Role.SELLER), orderControllers.getOrderById);
+
 router.get(
   "/orders/sellerEnd",
   auth(Role.SELLER),

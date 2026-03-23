@@ -17,6 +17,12 @@ router.get(
 );
 
 router.get(
+  "/seller/:id",
+  auth(Role.SELLER),
+  orderItemControllers.getAllOrderItemForSeller,
+);
+
+router.get(
   "/deliveredChecking/:id",
   auth(Role.CUSTOMER),
   orderItemControllers.deliveredStatusChecking,
@@ -26,6 +32,12 @@ router.patch(
   "/customer/:id",
   auth(Role.CUSTOMER),
   orderItemControllers.cancelOrderItem,
+);
+
+router.patch(
+  "/updateStatus/:id",
+  auth(Role.SELLER),
+  orderItemControllers.updateOrderItemStatus,
 );
 
 router.patch(

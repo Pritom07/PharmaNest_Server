@@ -39,6 +39,28 @@ const getAllOrderItems = async (
   }
 };
 
+const getAllOrderItemForSeller = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const seller_id = req.user?.id;
+    const order_id = req.params.id;
+    const data = await orderItemServices.getAllOrderItemForSeller(
+      order_id as string,
+      seller_id as string,
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Getting Seller Added OrderItem Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 const cancelOrderItem = async (
   req: Request,
   res: Response,
@@ -156,10 +178,34 @@ const getCountData = async (
   }
 };
 
+const updateOrderItemStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const payLoad = req.body;
+    const data = await orderItemServices.updateOrderItemStatus(
+      id as string,
+      payLoad,
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Updating Status Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderItemControllers = {
   getAllOrderItems,
   cancelOrderItem,
   deliveredStatusChecking,
   payOrderItem,
   getCountData,
+  getAllOrderItemForSeller,
+  updateOrderItemStatus,
 };
