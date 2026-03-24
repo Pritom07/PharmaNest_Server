@@ -12,6 +12,18 @@ router.get(
   orderControllers.getRecentOrders,
 );
 
+router.get(
+  "/stats/adminEnd",
+  auth(Role.ADMIN),
+  orderControllers.getStatsForAdmin,
+);
+
+router.get(
+  "/lastFiveDaysOrders/adminEnd",
+  auth(Role.ADMIN),
+  orderControllers.get_Last_FiveDays_Orders_For_Admin,
+);
+
 router.get("/order/:id", auth(Role.SELLER), orderControllers.getOrderById);
 
 router.get(

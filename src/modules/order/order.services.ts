@@ -104,13 +104,13 @@ const getAllOrders = async (customer_id: string) => {
       },
     });
 
-    const is_All_OrderItem_Delivered_and_Paid =
+    const is_Any_OrderItem_Delivered_and_Paid =
       orderItemsArray.length &&
       orderItemsArray.some(
         (i) => i.status === "DELIVERED" && i.price_paying_status === true,
       );
 
-    result.push({ ...item, is_All_OrderItem_Delivered_and_Paid });
+    result.push({ ...item, is_Any_OrderItem_Delivered_and_Paid });
   }
 
   return result;
@@ -293,6 +293,113 @@ const getOrderById = async (id: string, seller_id: string) => {
   return { ...res, seller_id };
 };
 
+const getStatsForAdmin = async () => {
+  const platformRevenue = await prisma.$transaction(async (tx) => {
+    const orders = await tx.orders.findMany({
+      select: {
+        id: true,
+        subtotal_amount: true,
+      },
+    });
+
+    const result: { id: string; subtotal_amount: number }[] = [];
+
+    for (const order of orders) {
+      const orderItems = await tx.orderItem.findMany({
+        where: {
+          order_id: order.id,
+        },
+      });
+
+      const is_All_OrderItem_Delivered_and_Paid =
+        orderItems.length &&
+        orderItems.every(
+          (i) => i.status === "DELIVERED" && i.price_paying_status === true,
+        );
+
+      if (is_All_OrderItem_Delivered_and_Paid) {
+        result.push(order);
+      }
+    }
+
+    const res = result.reduce(
+      (acc, currentObj) => acc + currentObj.subtotal_amount,
+      0,
+    );
+
+    return res;
+  });
+
+  const [customer, seller, activeListing, pendingDeliveries] =
+    await Promise.all([
+      await prisma.user.count({
+        where: {
+          role: "CUSTOMER",
+        },
+      }),
+
+      await prisma.user.count({
+        where: {
+          role: "SELLER",
+        },
+      }),
+
+      await prisma.medicines.count(),
+
+      await prisma.orderItem.count({
+        where: {
+          status: {
+            in: ["PLACED", "PROCESSING"],
+          },
+        },
+      }),
+    ]);
+
+  const userGrowth = { customer, seller };
+
+  return { platformRevenue, userGrowth, activeListing, pendingDeliveries };
+};
+
+const get_Last_FiveDays_Orders_For_Admin = async () => {
+  const lastFiveDaysArray = [...Array(5)].map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    return d.toISOString().split("T")[0];
+  });
+
+  const date_of_previous_4_days = new Date();
+  date_of_previous_4_days.setDate(date_of_previous_4_days.getDate() - 4);
+
+  const get_Last_FiveDays_Orders = await prisma.orders.findMany({
+    where: {
+      createdAt: {
+        gte: date_of_previous_4_days,
+        lte: new Date(),
+      },
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    select: {
+      createdAt: true,
+    },
+  });
+
+  const result = lastFiveDaysArray.map((date) => {
+    const no_of_orders_per_dateArray = get_Last_FiveDays_Orders.filter(
+      (d) => d.createdAt.toISOString().split("T")[0] === date,
+    );
+
+    const no_of_orders_per_date = no_of_orders_per_dateArray.length;
+
+    return { date, no_of_orders_per_date };
+  });
+
+  return result;
+};
+
 export const orderServices = {
   createOrder,
   getAllOrders,
@@ -302,4 +409,6 @@ export const orderServices = {
   getRecentOrders,
   sellerEndAllOrders,
   getOrderById,
+  getStatsForAdmin,
+  get_Last_FiveDays_Orders_For_Admin,
 };

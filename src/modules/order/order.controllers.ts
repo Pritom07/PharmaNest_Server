@@ -162,6 +162,44 @@ const getOrderById = async (
   }
 };
 
+const getStatsForAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { platformRevenue, userGrowth, activeListing, pendingDeliveries } =
+      await orderServices.getStatsForAdmin();
+    return res.status(200).json({
+      success: true,
+      message: "Getting Statistics From Various Models Done",
+      platformRevenue,
+      userGrowth,
+      activeListing,
+      pendingDeliveries,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+const get_Last_FiveDays_Orders_For_Admin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = await orderServices.get_Last_FiveDays_Orders_For_Admin();
+    return res.status(200).json({
+      success: true,
+      message: "Getting Last 5 Days Orders Data Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const orderControllers = {
   createOrder,
   getAllOrders,
@@ -171,4 +209,6 @@ export const orderControllers = {
   getRecentOrders,
   sellerEndAllOrders,
   getOrderById,
+  getStatsForAdmin,
+  get_Last_FiveDays_Orders_For_Admin,
 };
