@@ -36,11 +36,15 @@ const viewAllMedicines = async (
       },
     });
 
-    const totalEntry = await tx.medicines.count();
-    const totalPages = Math.ceil(totalEntry / (limit ?? 7));
+    const total = await tx.medicines.count({
+      where: {
+        seller_id,
+      },
+    });
+    const totalPages = Math.ceil(total / (limit ?? 7));
 
     const metadata = {
-      total: totalEntry,
+      total,
       currentPage: page,
       totalPages: totalPages,
       size: limit,

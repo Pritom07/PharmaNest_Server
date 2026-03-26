@@ -43,7 +43,7 @@ const getAllMedicines = async (paginationData: T_viewMedicineParams) => {
   const totalPages = Math.ceil(totalEntry / (limit ?? 7));
 
   const metadata = {
-    totalMedicines: totalEntry,
+    total: totalEntry,
     currentPage: page,
     totalPages: totalPages,
     size: limit,

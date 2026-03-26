@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { userServices } from "./user.services";
+import { paginationHelper } from "../../helpers/paginationHelpers";
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -51,4 +52,64 @@ const getUserStatus = async (
   }
 };
 
-export const userControllers = { getUserById, updateProfile, getUserStatus };
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
+      req.query,
+    );
+    const { result, metaData } = await userServices.getAllUsers({
+      page,
+      limit,
+      skip,
+      sortBy,
+      sortOrder,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Getting All Users Done",
+      data: result,
+      metaData,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+const updateUserStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = req.params.id;
+    const payLoad = req.body;
+    const { data, status } = await userServices.updateUserStatus(
+      id as string,
+      payLoad,
+    );
+
+    if (status === 200) {
+      return res.status(200).json({
+        success: true,
+        message: "Updating User Status Successfull",
+        data: data,
+      });
+    }
+
+    return res.status(404).json({
+      success: false,
+      message: "User Not Found",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
+export const userControllers = {
+  getUserById,
+  updateProfile,
+  getUserStatus,
+  getAllUsers,
+  updateUserStatus,
+};
