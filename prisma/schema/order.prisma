@@ -14,7 +14,7 @@ model Orders{
     address String
 
     trnxID String
-    delivery_charge_taker_seller_id String?
+    delivery_charge_taker_seller_id String? 
 
     orderItems OrderItem[]
     review Reviews?
