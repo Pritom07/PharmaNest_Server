@@ -65,12 +65,25 @@ const deleteMedicine = async (id: string) => {
     throw new Error("Medicine Not Found To Delete");
   }
 
+  const isPackaged = await prisma.orderItem.findFirst({
+    where: {
+      medicine_id: id,
+      status: {
+        in: ["PROCESSING", "SHIPPED", "DELIVERED"],
+      },
+    },
+  });
+
+  if (isPackaged) {
+    return { data: "Medicine Deletion Failed", status: 403 };
+  }
+
   const res = await prisma.medicines.delete({
     where: {
       id,
     },
   });
-  return res;
+  return { data: res, status: 200 };
 };
 
 const getMedicineById = async (id: string) => {

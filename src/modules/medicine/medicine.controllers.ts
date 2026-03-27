@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { medicineServices } from "./medicine.services";
 import { T_medicine } from "../../types/medicine.type";
 import { Role } from "../../middlewares/auth";
@@ -68,12 +68,25 @@ const deleteMedicine = async (
 ) => {
   try {
     const id = req.params.id;
-    const data = await medicineServices.deleteMedicine(id as string);
-    return res.status(200).json({
-      success: true,
-      message: "Medicine Delete successfull",
-      data: data,
-    });
+    const { data, status } = await medicineServices.deleteMedicine(
+      id as string,
+    );
+
+    if (status === 200) {
+      return res.status(200).json({
+        success: true,
+        message: "Medicine Delete successfull",
+        data: data,
+      });
+    }
+
+    if (status === 403) {
+      return res.status(403).json({
+        success: false,
+        message: "Medicine Deletion Failed",
+        data: data,
+      });
+    }
   } catch (err: any) {
     next(err);
   }
