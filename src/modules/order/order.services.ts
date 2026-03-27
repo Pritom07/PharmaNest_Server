@@ -493,7 +493,7 @@ const getOrderStats = async ({
     });
   }
 
-  const total = orders.length;
+  const total = await prisma.orders.count();
   const totalPages = Math.ceil(total / (limit ?? 7));
   const metaData = {
     total,
