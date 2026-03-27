@@ -28,7 +28,7 @@ app.use(
 
       const isAllowed =
         allowedOrigins.includes(origin) ||
-        /^https:\/\/Blog_Application_client.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/PharmaNest_Client.*\.vercel\.app$/.test(origin) ||
         /^https:\/\/.*\.vercel\.app$/.test(origin);
 
       if (isAllowed) {

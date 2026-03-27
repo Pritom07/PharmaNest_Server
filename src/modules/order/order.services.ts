@@ -433,12 +433,16 @@ const getOrderStats = async ({
   const result = [];
 
   for (const order of orders) {
-    const seller = await prisma.user.findUnique({
-      where: { id: order.delivery_charge_taker_seller_id as string },
-      select: { name: true },
-    });
+    let deliveryChargeTaker = null;
 
-    const deliveryChargeTaker = seller?.name;
+    if (order.delivery_charge_taker_seller_id) {
+      const seller = await prisma.user.findUnique({
+        where: { id: order.delivery_charge_taker_seller_id as string },
+        select: { name: true },
+      });
+
+      deliveryChargeTaker = seller?.name;
+    }
 
     const [count, totPending, totShipped, totDelivered, totPaid, totCancelled] =
       await Promise.all([
@@ -475,11 +479,19 @@ const getOrderStats = async ({
         }),
       ]);
 
-    const pending = Number(((totPending / count) * 100).toPrecision(3));
-    const shipped = Number(((totShipped / count) * 100).toPrecision(3));
-    const delivered = Number(((totDelivered / count) * 100).toPrecision(3));
-    const paid = Number(((totPaid / count) * 100).toPrecision(3));
-    const cancelled = Number(((totCancelled / count) * 100).toPrecision(3));
+    const pending = count
+      ? Number(((totPending / count) * 100).toPrecision(3))
+      : 0;
+    const shipped = count
+      ? Number(((totShipped / count) * 100).toPrecision(3))
+      : 0;
+    const delivered = count
+      ? Number(((totDelivered / count) * 100).toPrecision(3))
+      : 0;
+    const paid = count ? Number(((totPaid / count) * 100).toPrecision(3)) : 0;
+    const cancelled = count
+      ? Number(((totCancelled / count) * 100).toPrecision(3))
+      : 0;
 
     result.push({
       ...order,
