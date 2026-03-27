@@ -88,9 +88,25 @@ const editCategory = async (
   return { data: res, status: 200 };
 };
 
+const getCategoryForSeller = async () => {
+  const categories = await prisma.categories.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const res = categories.map((category) => {
+    return { label: category.name, value: category.id };
+  });
+
+  return res;
+};
+
 export const categoryServices = {
   getAllCategories,
   createCategory,
   deleteCategory,
   editCategory,
+  getCategoryForSeller,
 };

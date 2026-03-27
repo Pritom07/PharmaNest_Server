@@ -91,9 +91,26 @@ const getTopRatedMedicines = async () => {
   return res.slice(0, 4);
 };
 
+const getCategories = async () => {
+  const categories = await prisma.categories.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const result = categories.map((category) => {
+    const obj = { label: category.name, value: category.id };
+    return obj;
+  });
+
+  return result;
+};
+
 export const publicServices = {
   getAllMedicines,
   getMedicineById,
   getMedicineByName,
   getTopRatedMedicines,
+  getCategories,
 };

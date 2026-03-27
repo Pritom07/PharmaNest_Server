@@ -6,6 +6,12 @@ const router = Router();
 
 router.get("/", auth(Role.ADMIN), categoryControllers.getAllCategories);
 
+router.get(
+  "/sellerEnd",
+  auth(Role.SELLER),
+  categoryControllers.getCategoryForSeller,
+);
+
 router.post("/", auth(Role.ADMIN), categoryControllers.createCategory);
 
 router.patch("/update/:id", auth(Role.ADMIN), categoryControllers.editCategory);

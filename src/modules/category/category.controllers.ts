@@ -100,9 +100,27 @@ const editCategory = async (
   }
 };
 
+const getCategoryForSeller = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = await categoryServices.getCategoryForSeller();
+    return res.status(200).json({
+      success: true,
+      message: "Getting Categories Successfull",
+      data: data,
+    });
+  } catch (err: any) {
+    next(err);
+  }
+};
+
 export const categoryControllers = {
   getAllCategories,
   createCategory,
   deleteCategory,
   editCategory,
+  getCategoryForSeller,
 };
