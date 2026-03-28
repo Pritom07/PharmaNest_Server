@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { orderServices } from "./order.services";
 import { T_medicineOrder } from "../../types/order.type";
 import { T_payDeliveryCharge } from "../../types/payDeliveryCharge.type";
-import { paginationHelper } from "../../helpers/paginationHelpers";
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -201,33 +200,6 @@ const get_Last_FiveDays_Orders_For_Admin = async (
   }
 };
 
-const getOrderStats = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper(
-      req.query,
-    );
-    const { result, metaData } = await orderServices.getOrderStats({
-      page,
-      limit,
-      skip,
-      sortBy,
-      sortOrder,
-    });
-    return res.status(200).json({
-      success: true,
-      message: "Getting Order Statistics Successfull",
-      data: result,
-      metaData,
-    });
-  } catch (err: any) {
-    next(err);
-  }
-};
-
 export const orderControllers = {
   createOrder,
   getAllOrders,
@@ -239,5 +211,4 @@ export const orderControllers = {
   getOrderById,
   getStatsForAdmin,
   get_Last_FiveDays_Orders_For_Admin,
-  getOrderStats,
 };

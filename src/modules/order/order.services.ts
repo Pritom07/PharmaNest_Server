@@ -3,7 +3,6 @@ import { T_medicine } from "../../types/medicine.type";
 import { T_medicineOrder } from "../../types/order.type";
 import crypto from "crypto";
 import { T_payDeliveryCharge } from "../../types/payDeliveryCharge.type";
-import { T_viewMedicineParams } from "../../types/viewMedicinesQueryParams";
 
 const createOrder = async (payLoad: T_medicineOrder) => {
   const res = await prisma.$transaction(async (tx) => {
@@ -401,122 +400,6 @@ const get_Last_FiveDays_Orders_For_Admin = async () => {
   return result;
 };
 
-const getOrderStats = async ({
-  page,
-  limit,
-  skip,
-  sortBy,
-  sortOrder,
-}: T_viewMedicineParams) => {
-  const orders = await prisma.orders.findMany({
-    take: limit,
-    skip,
-
-    orderBy: {
-      [sortBy!]: sortOrder,
-    },
-
-    select: {
-      id: true,
-      subtotal_amount: true,
-      trnxID: true,
-      createdAt: true,
-      delivery_charge_taker_seller_id: true,
-      customer: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
-
-  const result = [];
-
-  for (const order of orders) {
-    let deliveryChargeTaker = null;
-
-    if (order.delivery_charge_taker_seller_id) {
-      const seller = await prisma.user.findUnique({
-        where: { id: order.delivery_charge_taker_seller_id as string },
-        select: { name: true },
-      });
-
-      deliveryChargeTaker = seller?.name;
-    }
-
-    const [count, totPending, totShipped, totDelivered, totPaid, totCancelled] =
-      await Promise.all([
-        await prisma.orderItem.count({ where: { order_id: order.id } }),
-        await prisma.orderItem.count({
-          where: {
-            order_id: order.id,
-            status: { in: ["PLACED", "PROCESSING"] },
-          },
-        }),
-
-        await prisma.orderItem.count({
-          where: { order_id: order.id, status: "SHIPPED" },
-        }),
-
-        await prisma.orderItem.count({
-          where: {
-            order_id: order.id,
-            status: "DELIVERED",
-            price_paying_status: false,
-          },
-        }),
-
-        await prisma.orderItem.count({
-          where: {
-            order_id: order.id,
-            status: "DELIVERED",
-            price_paying_status: true,
-          },
-        }),
-
-        await prisma.orderItem.count({
-          where: { order_id: order.id, status: "CANCELLED" },
-        }),
-      ]);
-
-    const pending = count
-      ? Number(((totPending / count) * 100).toPrecision(3))
-      : 0;
-    const shipped = count
-      ? Number(((totShipped / count) * 100).toPrecision(3))
-      : 0;
-    const delivered = count
-      ? Number(((totDelivered / count) * 100).toPrecision(3))
-      : 0;
-    const paid = count ? Number(((totPaid / count) * 100).toPrecision(3)) : 0;
-    const cancelled = count
-      ? Number(((totCancelled / count) * 100).toPrecision(3))
-      : 0;
-
-    result.push({
-      ...order,
-      deliveryChargeTaker,
-      count,
-      pending,
-      shipped,
-      delivered,
-      paid,
-      cancelled,
-    });
-  }
-
-  const total = await prisma.orders.count();
-  const totalPages = Math.ceil(total / (limit ?? 7));
-  const metaData = {
-    total,
-    currentPage: page,
-    totalPages,
-    size: limit,
-  };
-
-  return { result, metaData };
-};
-
 export const orderServices = {
   createOrder,
   getAllOrders,
@@ -528,5 +411,4 @@ export const orderServices = {
   getOrderById,
   getStatsForAdmin,
   get_Last_FiveDays_Orders_For_Admin,
-  getOrderStats,
 };
