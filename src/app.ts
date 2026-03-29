@@ -11,6 +11,7 @@ import { orderRoutes } from "./modules/order/order.routes";
 import { orderItemRoutes } from "./modules/orderItem/orderItem.routes";
 import { reviewRoutes } from "./modules/review/review.routes";
 import { categoryRoutes } from "./modules/category/category.routes";
+import errorHandler from "./middlewares/globalErrorHandler";
 
 const app = express();
 const allowedOrigins = [
@@ -64,5 +65,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use(notFound);
+
+app.use(errorHandler);
 
 export default app;
